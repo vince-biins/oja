@@ -56,7 +56,7 @@ fun AddHoursDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Clickable "Custom" text to toggle input field
+
                 Box(modifier =   Modifier.clickable { showCustomInput = !showCustomInput }.align(Alignment.Start)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
