@@ -22,14 +22,16 @@ import com.project.oja.data.model.HourRecord
 import com.project.oja.data.model.calendar.CalendarUiState
 import com.project.oja.presentation.components.AddHoursDialog
 import com.project.oja.presentation.components.HalfCircleProgressBar
-import com.project.oja.presentation.components.OjaDropDown
-import com.project.oja.presentation.components.calendar.CalendarWidget
-import com.project.oja.presentation.components.calendar.DateSection
+import com.project.oja.base.composables.OjaDropDown
+import com.project.oja.presentation.components.sections.DateSection
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardState
 import java.time.LocalDate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.project.oja.base.composables.OjaSlimDropDown
+import com.project.oja.presentation.components.sections.DashboardCalendarSection
+
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
@@ -54,8 +56,9 @@ fun DashboardScreen(
             }
         )
 
-        if(showDialog) {
-            AddHoursDialog(   onDismissRequest = { showDialog = false },
+        if (showDialog) {
+            AddHoursDialog(
+                onDismissRequest = { showDialog = false },
                 onConfirm = { hours ->
                     addedHours = hours
                     showDialog = false
@@ -82,9 +85,9 @@ fun DashboardContent(
     ) {
         Box(
             modifier = Modifier.align(Alignment.End)
-        ){  OjaDropDown(
-            itemList =  LoggedTime.entries.map { it.description }
-        ) }
+        ) {
+            OjaSlimDropDown(itemList = LoggedTime.entries.map { it.description })
+        }
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,22 +97,13 @@ fun DashboardContent(
                 size = hourSectionSize,
                 onSubtractIconClicked = { actions(DashboardActions.OnSubtractHourClicked) },
                 onAddIconClicked = {
-                //    actions(DashboardActions.OnAddHourClicked)
+                    //    actions(DashboardActions.OnAddHourClicked)
                     showDialog()
                 }
             )
         }
 
-        Box {
-            CalendarWidget(
-                yearMonth = calendarUiState.yearMonth,
-                dates = calendarUiState.dates,
-                onPreviousMonthButtonClicked = { actions(DashboardActions.OnPreviousMonthClicked(it)) },
-                onNextMonthButtonClicked = { actions(DashboardActions.OnNextMonthClicked(it)) },
-                onDateClickListener = { actions(DashboardActions.OnDateItemClicked(it)) },
-            )
-        }
-
+        DashboardCalendarSection(calendarUiState = calendarUiState, actions = actions)
 
         Column { DateSection() }
     }
@@ -128,7 +122,7 @@ fun HourSection(
             .size(size),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onTertiary
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Box(

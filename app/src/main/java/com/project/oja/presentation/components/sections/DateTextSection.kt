@@ -1,4 +1,4 @@
-package com.project.oja.presentation.components.calendar
+package com.project.oja.presentation.components.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
