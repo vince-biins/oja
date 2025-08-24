@@ -40,7 +40,7 @@ fun DashboardScreen(
     actions: (DashboardActions) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var addedHours by remember { mutableStateOf<Float?>(null) }
+
 
     Scaffold(
         modifier = modifier.fillMaxSize()
@@ -60,7 +60,7 @@ fun DashboardScreen(
             AddHoursDialog(
                 onDismissRequest = { showDialog = false },
                 onConfirm = { hours ->
-                    addedHours = hours
+                    actions(DashboardActions.OnAddHourClicked(hours ?: 8.0F))
                     showDialog = false
                 })
         }
@@ -95,7 +95,7 @@ fun DashboardContent(
             HourSection(
                 hourRecord = dashboardState.hourRecord,
                 size = hourSectionSize,
-                onSubtractIconClicked = { actions(DashboardActions.OnSubtractHourClicked) },
+                onSubtractIconClicked = { actions(DashboardActions.OnSubtractHourClicked(it)) },
                 onAddIconClicked = {
                     //    actions(DashboardActions.OnAddHourClicked)
                     showDialog()
@@ -114,8 +114,8 @@ fun HourSection(
     modifier: Modifier = Modifier,
     hourRecord: HourRecord,
     size: Dp,
-    onAddIconClicked: () -> Unit,
-    onSubtractIconClicked: () -> Unit,
+    onAddIconClicked: (Float) -> Unit,
+    onSubtractIconClicked: (Float) -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -135,8 +135,8 @@ fun HourSection(
                 hoursTaken = hourRecord.hoursTaken,
                 totalHours = hourRecord.totalHours,
                 modifier = Modifier.size(size.times(0.9f)),
-                onAddIconClicked = onAddIconClicked,
-                onSubtractIconClicked = onSubtractIconClicked,
+                onAddIconClicked = {onAddIconClicked(8.0F)},
+                onSubtractIconClicked = {onSubtractIconClicked(8.0F)},
             )
         }
     }
