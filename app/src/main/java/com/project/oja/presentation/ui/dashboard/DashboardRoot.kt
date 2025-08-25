@@ -11,11 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.project.oja.data.model.HourRecord
 import com.project.oja.presentation.components.calendar.CalendarViewModel
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardEffect
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardEvent
-import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardState
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardViewModel
 import org.koin.androidx.compose.koinViewModel
 

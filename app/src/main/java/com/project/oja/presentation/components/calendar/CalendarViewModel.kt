@@ -9,11 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.YearMonth
 
-/**
- * Source: <a> https://medium.com/@meytataliti/android-simple-calendar-with-jetpack-compose-v2-b7311bd6e331 </a>
- */
 
 class CalendarViewModel : ViewModel() {
 
@@ -22,11 +20,19 @@ class CalendarViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CalendarUiState.Init)
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 
+
+    private var startDate: LocalDate = LocalDate.now().plusDays(3) // example default
+    private var endDate: LocalDate = LocalDate.now().plusDays(15)
+
     init {
         viewModelScope.launch {
             _uiState.update { currentState ->
                 currentState.copy(
-                    dates = dataSource.getDates(currentState.yearMonth)
+                    dates = dataSource.getDates(
+                        currentState.yearMonth,
+                        defaultStart = startDate,
+                        defaultEnd = endDate,
+                    ),
                 )
             }
         }
@@ -37,8 +43,13 @@ class CalendarViewModel : ViewModel() {
             _uiState.update { currentState ->
                 currentState.copy(
                     yearMonth = nextMonth,
-                    dates = dataSource.getDates(nextMonth)
-                )
+                    dates = dataSource.getDates(
+                        nextMonth,
+                        defaultStart = startDate,
+                        defaultEnd = endDate,
+                    ),
+
+                    )
             }
         }
     }
@@ -48,7 +59,11 @@ class CalendarViewModel : ViewModel() {
             _uiState.update { currentState ->
                 currentState.copy(
                     yearMonth = prevMonth,
-                    dates = dataSource.getDates(prevMonth)
+                    dates = dataSource.getDates(
+                        prevMonth,
+                        defaultStart = startDate,
+                        defaultEnd = endDate,
+                    )
                 )
             }
         }

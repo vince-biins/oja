@@ -1,5 +1,6 @@
 package com.project.oja.base.composables
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.project.oja.base.enum.LoggedTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,15 +108,17 @@ fun OjaDropDown(modifier: Modifier = Modifier, itemList: List<String>) {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OjaSlimDropDown(
+fun <T> OjaSlimDropDown(
     modifier: Modifier = Modifier,
-    itemList: List<String>
+    itemList: List<T>,
+    selectedItem: T = itemList.first(),
+    onValueChanged: (T) -> Unit,
+    labelMapper: (T) -> String
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf(itemList.first()) }
+    var currentSelected by remember { mutableStateOf(selectedItem) }
 
     val pillShape = RoundedCornerShape(60)
 
@@ -126,8 +130,9 @@ fun OjaSlimDropDown(
             onExpandedChange = { expanded = !expanded },
             modifier = Modifier.background(Color.Transparent)
         ) {
+
             BasicTextField(
-                value = selectedItem,
+                value = labelMapper(currentSelected),
                 onValueChange = {},
                 readOnly = true,
                 singleLine = true,
@@ -147,12 +152,9 @@ fun OjaSlimDropDown(
                             .padding(start = 8.dp, end = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Box(modifier = Modifier.weight(1f)) {
                             innerTextField()
                         }
-
-
                         val rotationAngle by animateFloatAsState(
                             targetValue = if (expanded) 180f else 0f,
                             label = "DropdownArrowRotation"
@@ -165,8 +167,9 @@ fun OjaSlimDropDown(
                     }
                 }
             )
+
             ExposedDropdownMenu(
-                containerColor =  MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
                 shadowElevation = 0.dp,
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
@@ -179,18 +182,20 @@ fun OjaSlimDropDown(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                item,
+                                labelMapper(item),
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         },
                         onClick = {
-                            selectedItem = item
+                            currentSelected = item
                             expanded = false
+                            onValueChanged(item)
                         },
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                        modifier = Modifier.background(Color.Transparent, RoundedCornerShape(4)).height(28.dp),
-
+                        modifier = Modifier
+                            .background(Color.Transparent, RoundedCornerShape(4))
+                            .height(28.dp),
                     )
                 }
             }

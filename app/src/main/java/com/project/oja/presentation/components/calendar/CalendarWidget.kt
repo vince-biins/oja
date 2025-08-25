@@ -16,6 +16,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.project.oja.data.model.calendar.CalendarUiState
 import com.project.oja.util.DateUtil
 import com.project.oja.util.getDisplayName
+import java.time.LocalDate
 import java.time.YearMonth
 
-/**
- * Source: <a> https://medium.com/@meytataliti/android-simple-calendar-with-jetpack-compose-v2-b7311bd6e331 </a>
- */
+
 @Composable
 fun CalendarWidget(
     days: Array<String> = DateUtil.daysOfWeek,
@@ -38,6 +41,7 @@ fun CalendarWidget(
     onNextMonthButtonClicked: (YearMonth) -> Unit,
     onDateClickListener: (CalendarUiState.Date) -> Unit,
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +61,9 @@ fun CalendarWidget(
         }
         Content(
             dates = dates,
-            onDateClickListener = onDateClickListener
+            onDateClickListener = { clicked ->
+
+            }
         )
     }
 }
@@ -125,7 +131,8 @@ fun Content(
                     ContentItem(
                         date = item,
                         onClickListener = onDateClickListener,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+
                     )
                     index++
                 }
@@ -138,20 +145,18 @@ fun Content(
 fun ContentItem(
     date: CalendarUiState.Date,
     onClickListener: (CalendarUiState.Date) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val backgroundColor = when {
+        date.isToday -> MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+        date.isInDefaultRange -> MaterialTheme.colorScheme.secondaryContainer
+        else -> Color.Transparent
+    }
+
     Box(
         modifier = modifier
-            .background(
-                color = if (date.isSelected) {
-                    MaterialTheme.colorScheme.secondaryContainer
-                } else {
-                    Color.Transparent
-                }
-            )
-            .clickable {
-                onClickListener(date)
-            }
+            .background(backgroundColor)
+            .clickable { onClickListener(date) }
     ) {
         Text(
             text = date.dayOfMonth,

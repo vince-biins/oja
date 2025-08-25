@@ -41,7 +41,6 @@ fun DashboardScreen(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-
     Scaffold(
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
@@ -76,9 +75,8 @@ fun DashboardContent(
     actions: (DashboardActions) -> Unit,
     showDialog: () -> Unit,
 ) {
-    val today = LocalDate.now()
-    val dates = List(14) { today.plusDays(it.toLong()) }
     val hourSectionSize = 250.dp
+    var dropDownValue by remember { mutableStateOf<LoggedTime>(LoggedTime.EIGHT_HOURS) }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Top
@@ -86,7 +84,10 @@ fun DashboardContent(
         Box(
             modifier = Modifier.align(Alignment.End)
         ) {
-            OjaSlimDropDown(itemList = LoggedTime.entries.map { it.description })
+            OjaSlimDropDown(
+                itemList = LoggedTime.entries,
+                onValueChanged = { dropDownValue = it },
+                labelMapper = { it.description })
         }
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -97,8 +98,11 @@ fun DashboardContent(
                 size = hourSectionSize,
                 onSubtractIconClicked = { actions(DashboardActions.OnSubtractHourClicked(it)) },
                 onAddIconClicked = {
-                    //    actions(DashboardActions.OnAddHourClicked)
-                    showDialog()
+                    if (dropDownValue == LoggedTime.CUSTOM) {
+                        showDialog()
+                    } else {
+                        actions(DashboardActions.OnAddHourClicked(dropDownValue.value))
+                    }
                 }
             )
         }
@@ -135,8 +139,8 @@ fun HourSection(
                 hoursTaken = hourRecord.hoursTaken,
                 totalHours = hourRecord.totalHours,
                 modifier = Modifier.size(size.times(0.9f)),
-                onAddIconClicked = {onAddIconClicked(8.0F)},
-                onSubtractIconClicked = {onSubtractIconClicked(8.0F)},
+                onAddIconClicked = { onAddIconClicked(8.0F) },
+                onSubtractIconClicked = { onSubtractIconClicked(8.0F) },
             )
         }
     }
