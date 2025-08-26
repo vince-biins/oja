@@ -3,6 +3,7 @@ package com.project.oja.presentation.ui.dashboard.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.oja.domain.repository.TimeLoggedRepository
+import com.project.oja.presentation.ui.dashboard.DashboardActions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,15 +24,14 @@ class DashboardViewModel(
     val uiEffect: SharedFlow<DashboardEffect> = _uiEffect.asSharedFlow()
 
     init {
-        onEvent(DashboardEvent.LoadDashboard)
+        loadTimeLogs()
     }
 
-    fun onEvent(event: DashboardEvent) {
-        when (event) {
-            is DashboardEvent.DecrementHours -> reduceHours(event.hour)
-            is DashboardEvent.IncrementHours -> addHours(hour = event.hour)
-            DashboardEvent.LoadDashboard -> loadTimeLogs()
-
+    fun onAction(action: DashboardActions) {
+        when (action) {
+            is DashboardActions.OnAddHourClicked -> addHours(action.hour)
+            is DashboardActions.OnSubtractHourClicked -> reduceHours(action.hour)
+            else -> Unit
         }
     }
 

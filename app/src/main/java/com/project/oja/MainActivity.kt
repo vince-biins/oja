@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.project.oja.base.theme.OJATheme
+import com.project.oja.presentation.navigation.BasicNavigation
 import com.project.oja.presentation.ui.dashboard.DashboardRoot
 
 class MainActivity : ComponentActivity() {
@@ -19,9 +20,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             OJATheme {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    DashboardRoot()
+                    BasicNavigation()
                 }
             }
         }

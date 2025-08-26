@@ -11,17 +11,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavBackStack
 import com.project.oja.presentation.components.calendar.CalendarViewModel
+import com.project.oja.presentation.navigation.Screens
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardEffect
-import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardEvent
 import com.project.oja.presentation.ui.dashboard.viewmodel.DashboardViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DashboardRoot(
     modifier: Modifier = Modifier,
-    calendarViewModel: CalendarViewModel = koinViewModel(),
-    dashboardViewModel: DashboardViewModel = koinViewModel()
+    calendarViewModel: CalendarViewModel,
+    dashboardViewModel: DashboardViewModel,
+    backStack: NavBackStack
 ) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val uiEvent by dashboardViewModel.uiEffect.collectAsState(initial = null)
@@ -38,11 +39,11 @@ fun DashboardRoot(
     val dashboardState by dashboardViewModel.uiState.collectAsState()
     val handleDashboardActions: (DashboardActions) -> Unit = { action ->
         when (action) {
-            is DashboardActions.OnAddHourClicked ->
-                dashboardViewModel.onEvent(DashboardEvent.IncrementHours(action.hour))
-            is DashboardActions.OnSubtractHourClicked ->
-                dashboardViewModel.onEvent(DashboardEvent.DecrementHours(action.hour))
-            is DashboardActions.OnDateItemClicked -> {}
+            is DashboardActions.OnAddHourClicked -> dashboardViewModel.onAction(action)
+            is DashboardActions.OnSubtractHourClicked -> dashboardViewModel.onAction(action)
+            is DashboardActions.OnDateItemClicked -> {
+                backStack.add(Screens.Detail("123"))
+            }
             is DashboardActions.OnPreviousMonthClicked ->
                 calendarViewModel.toPreviousMonth(action.yearMonth)
             is DashboardActions.OnNextMonthClicked ->

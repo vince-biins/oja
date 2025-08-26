@@ -61,9 +61,7 @@ fun CalendarWidget(
         }
         Content(
             dates = dates,
-            onDateClickListener = { clicked ->
-
-            }
+            onDateClickListener = onDateClickListener
         )
     }
 }
